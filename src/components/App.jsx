@@ -1,33 +1,29 @@
-import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
-import { nanoid } from 'nanoid';
 
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 
+import { addContact, deleteContact } from '../redux/contacts/contactsSlice';
+import { changeFilter } from '../redux/filter/filterSlice';
+
 import {
-  addContact,
-  deleteContact,
-} from '../redux/contactsSlice/contactsSlice';
+  getContacts,
+  getFilteredContacts,
+} from '../redux/contacts/contactsSelectors';
 
 import styles from './App.module.css';
 
 export const App = () => {
-  const { contacts } = useSelector(state => state.contacts);
+  const contacts = useSelector(getContacts);
+  const filteredContacts = useSelector(getFilteredContacts);
   const dispatch = useDispatch();
-  // const [contacts, setContacts] = useState(() => {
-  //   return JSON.parse(localStorage.getItem('contacts')) ?? [];
-  // });
 
-  const [filter, setFilter] = useState('');
+  // useEffect(() => {
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
-  const addContactFunc = (name, number) => {
+  const handleAddContact = (name, number) => {
     if (isDublicate(name)) {
       alert(`${name} is already in contacts.`);
       return;
@@ -46,39 +42,39 @@ export const App = () => {
     return contacts.some(item => normalizedName === item.name.toLowerCase());
   };
 
-  const deleteContactProps = id => {
+  const handleDeleteContact = id => {
     dispatch(deleteContact(id));
   };
 
   const handleFilter = e => {
     const { value } = e.target;
-    setFilter(value);
+    dispatch(changeFilter(value));
   };
 
-  const getFilteredContacts = () => {
-    if (!filter) {
-      return contacts;
-    }
+  // const getFilteredContacts = () => {
+  //   if (!filter) {
+  //     return contacts;
+  //   }
 
-    const normalizedFilter = filter.toLowerCase();
+  //   const normalizedFilter = filter.toLowerCase();
 
-    return contacts.filter(
-      item =>
-        item.name.toLowerCase().includes(normalizedFilter) ||
-        item.number.toLowerCase().includes(normalizedFilter)
-    );
-  };
+  //   return contacts.filter(
+  //     item =>
+  //       item.name.toLowerCase().includes(normalizedFilter) ||
+  //       item.number.toLowerCase().includes(normalizedFilter)
+  //   );
+  // };
 
-  const filteredContacts = getFilteredContacts();
+  // const filteredContacts = getFilteredContacts();
 
   return (
     <div className={styles.phonebook}>
       <h2>Phonebook</h2>
-      <ContactForm onSubmit={addContactFunc} />
+      <ContactForm onSubmit={handleAddContact} />
 
       <h2>Contacts</h2>
       <Filter handleFilter={handleFilter} />
-      <ContactList items={filteredContacts} onDelete={deleteContactProps} />
+      <ContactList items={filteredContacts} onDelete={handleDeleteContact} />
     </div>
   );
 };
