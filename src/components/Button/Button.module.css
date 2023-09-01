@@ -1,0 +1,19 @@
+.btn {
+  padding: 5px;
+  background-color: transparent;
+  border: 1px solid gray;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover,
+.btn:focus {
+  color: lime;
+  background-color: hsl(0, 0%, 60%);
+  border-color: lime;
+}
+
+.btn:active {
+  color: hsl(120, 100%, 20%);
+  border-color: hsl(120, 100%, 20%);
+}
