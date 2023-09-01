@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { nanoid } from 'nanoid';
 
@@ -6,12 +7,19 @@ import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 
+import {
+  addContact,
+  deleteContact,
+} from '../redux/contactsSlice/contactsSlice';
+
 import styles from './App.module.css';
 
 export const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    return JSON.parse(localStorage.getItem('contacts')) ?? [];
-  });
+  const { contacts } = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
+  // const [contacts, setContacts] = useState(() => {
+  //   return JSON.parse(localStorage.getItem('contacts')) ?? [];
+  // });
 
   const [filter, setFilter] = useState('');
 
@@ -19,19 +27,13 @@ export const App = () => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-  const addContact = (name, number) => {
+  const addContactFunc = (name, number) => {
     if (isDublicate(name)) {
       alert(`${name} is already in contacts.`);
       return;
     }
 
-    const newContact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-
-    setContacts(prevContacts => [newContact, ...prevContacts]);
+    dispatch(addContact(name, number));
   };
 
   const isDublicate = name => {
@@ -44,8 +46,8 @@ export const App = () => {
     return contacts.some(item => normalizedName === item.name.toLowerCase());
   };
 
-  const deleteContact = id => {
-    setContacts(prevContacts => prevContacts.filter(item => item.id !== id));
+  const deleteContactProps = id => {
+    dispatch(deleteContact(id));
   };
 
   const handleFilter = e => {
@@ -72,11 +74,11 @@ export const App = () => {
   return (
     <div className={styles.phonebook}>
       <h2>Phonebook</h2>
-      <ContactForm onSubmit={addContact} />
+      <ContactForm onSubmit={addContactFunc} />
 
       <h2>Contacts</h2>
       <Filter handleFilter={handleFilter} />
-      <ContactList items={filteredContacts} onDelete={deleteContact} />
+      <ContactList items={filteredContacts} onDelete={deleteContactProps} />
     </div>
   );
 };
