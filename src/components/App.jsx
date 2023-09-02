@@ -19,10 +19,6 @@ export const App = () => {
   const filteredContacts = useSelector(getFilteredContacts);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
-
   const handleAddContact = (name, number) => {
     if (isDublicate(name)) {
       alert(`${name} is already in contacts.`);
@@ -50,22 +46,6 @@ export const App = () => {
     const { value } = e.target;
     dispatch(changeFilter(value));
   };
-
-  // const getFilteredContacts = () => {
-  //   if (!filter) {
-  //     return contacts;
-  //   }
-
-  //   const normalizedFilter = filter.toLowerCase();
-
-  //   return contacts.filter(
-  //     item =>
-  //       item.name.toLowerCase().includes(normalizedFilter) ||
-  //       item.number.toLowerCase().includes(normalizedFilter)
-  //   );
-  // };
-
-  // const filteredContacts = getFilteredContacts();
 
   return (
     <div className={styles.phonebook}>
