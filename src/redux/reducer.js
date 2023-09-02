@@ -9,19 +9,12 @@ import { filterReducer } from './filter/filterSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  //   whitelist: ['contacts'],
+  whitelist: ['contacts'],
 };
 
-// const reducer = combineReducers({
-//   contacts: contactsReducer,
-//   filter: filterReducer,
-// });
-
-// export const persistedReducer = persistReducer(persistConfig, reducer);
-
-const persistedReducer2 = persistReducer(persistConfig, contactsReducer);
-
-export const persistedReducer = combineReducers({
-  contacts: persistedReducer2,
+const reducer = combineReducers({
+  contacts: contactsReducer,
   filter: filterReducer,
 });
+
+export const persistedReducer = persistReducer(persistConfig, reducer);
